@@ -25,7 +25,7 @@ We read in the same data from Activity 4 below, but notice that this code is now
 Compare this code output to the `load_data` chunk in your knitted Activity 4 `.md` report.
 What does enclosing an assignment code (i.e., `object_name <- r_code`) in parentheses do?
 
-**Response**:
+**It shows a couple more rows than not doing that**:
 
 
 ### Data Codebook
@@ -75,11 +75,23 @@ There are a number of ways to create a code chunk:
 - Tired: Copy-and-paste a previous code chunk, delete the code, then add your new code. **This is likely to create more work for you and I strongly encourage you not to use this method.**
 - Wired: Click on the ![new chunk icon](README-img/new-chunk-icon.png) and select ![r chunk icon](README-img/r-chunk-icon.png) (notice all the different types of code chunks that you can use within an RMarkdown file!)
 - Inspired: Ctrl/Command + Alt/Option + I. *This is my preferred method.*
+```{r}
+
+```
 
 1. Below, create a code chunk and name it `median_earnings`. Make sure there is an empty line above and below the code chunk.
 2. In your newly created R code chunk, verify that the median income for all majors was $36,000.
   - Specify that you want to use the `college_recent_grads` dataset, *then*, using the appropriate functions from `{dplyr}`, obtain the *median* summary statistic for the variable "median earnings of full-time, year-round workers" (this very wordy variable is simply `median` in the dataset).
   - In the appropriate *summarizing* step, refer to your numerical summary `median_earnings`.
+  
+```{r median_earnings}
+college_recent_grads %>%
+  summarise(median) %>%
+  mutate(the_median = median(median))
+
+
+```
+  
 
 ![](README-img/noun_pause.png) **Planned Pause Point**: If you have any questions, contact your instructor. Otherwise feel free to continue on.
 
@@ -91,6 +103,22 @@ Note that wWhen I obtain numerical summaries for variables, I like to include th
 1. Below, create a code chunk and name it `summary_earnings`. Make sure there is an empty line above and below the code chunk.
 2. Specify that you want to use the `college_recent_grads` dataset, *then*, using the appropriate functions from `{dplyr}`, obtain the sample size (i.e., *n*umber of observations), *mean*, *s*tandard *d*eviation, *min*imum, *median*, and *max*imum summaries for the variable "median earnings of full-time, year-round workers".
   - Be careful when you name your output summaries as we are dealing with things that could use the same name as functions that you will be using (i.e., "median").
+  
+```{r summary_earnings}
+
+college_recent_grads %>%
+group_by(major) %>%
+  summarise(n = sum(sample_size), 
+            median_earnings = median(median),
+            the_mean = mean(median_earnings),
+            sd(median_earnings),
+            min(median_earnings),
+            max(median_earnings))
+  
+  
+
+```
+  
 
 
 
@@ -99,7 +127,7 @@ You should discuss the measures of center, spread, and potential shape only usin
 DO NOT create any data visualizations here.
 Use your understanding of how these numerical summaries are related to the measures of center, spread, and potential shape.
 
-**Response**:
+**I believe it will look skewed to the STEM majors as those jobs have a tendency to be higher paying**:
 
 
 ### Median Earnings by Major Category
@@ -110,13 +138,30 @@ Now we will see how the different major categories compare to the overall distri
 1. Below, create a code chunk and name it `major_earnings`. Make sure there is an empty line above and below the code chunk.
 2. Specify that you want to use the `college_recent_grads` dataset, *then*, using the appropriate functions from `{dplyr}`, obtain the similar summaries of the variable "median earnings of full-time, year-round workers" as your `summary_earnings` code chunk, except now *by* each `major_category`.
 
+```{r major_earnings}
+
+major_earnings <- college_recent_grads %>%
+group_by(major) %>%
+  summarise(n = sum(sample_size), 
+            median_earnings = median(median),
+            the_mean = mean(median_earnings),
+            sd(median_earnings),
+            min(median_earnings),
+            max(median_earnings))
+  
+
+arrange(major_earnings, desc(median_earnings))
+
+```
+
+
 
 
 Is anything noteworthy when comparing your output from  `summary_earnings` to `major_earnings`?
 Also, compare your code in `summary_earnings` to `major_earnings`. 
 What is the same? Different?
 
-**Response**:
+**The higher sample size had the lower because there were more participants while this was showing it by major and showing the sample size**:
 
 
 Before we continue, knit your document and take note of what the output for your `major_earnings` code chunk looks like.
